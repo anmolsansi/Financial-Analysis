@@ -2,3 +2,4 @@ fastapi
 uvicorn[standard]
 flake8
 pytest
+httpx
