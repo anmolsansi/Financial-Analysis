@@ -25,7 +25,10 @@ def _validate_keywords(keywords: str):
 def _extract_daily_series(payload: dict) -> dict:
     series = payload.get("Time Series (Daily)")
     if not isinstance(series, dict) or not series:
-        raise HTTPException(status_code=502, detail="Upstream daily series data missing.")
+        raise HTTPException(
+            status_code=502,
+            detail="Upstream daily series data missing.",
+        )
     return series
 
 
@@ -50,6 +53,7 @@ def _handle_error(error: Exception):
         raise HTTPException(status_code=500, detail=str(error))
     raise HTTPException(status_code=500, detail="Unexpected server error")
 
+
 @router.get("/stock-price/{symbol}")
 async def get_stock_price(symbol: str):
     try:
@@ -58,7 +62,8 @@ async def get_stock_price(symbol: str):
         return data
     except Exception as e:
         _handle_error(e)
-    
+
+
 @router.get("/app/search-symbol/{keywords}")
 async def search_symbol(keywords: str):
     try:
@@ -133,7 +138,11 @@ async def time_series_daily_last_7(symbol: str):
         _validate_symbol(symbol)
         payload = await client.get_time_series_daily(symbol)
         series = _extract_daily_series(payload)
-        return {"symbol": symbol.upper(), "days": 7, "data": _filter_last_days(series, 7)}
+        return {
+            "symbol": symbol.upper(),
+            "days": 7,
+            "data": _filter_last_days(series, 7),
+        }
     except Exception as e:
         _handle_error(e)
 
@@ -144,7 +153,11 @@ async def time_series_daily_last_15(symbol: str):
         _validate_symbol(symbol)
         payload = await client.get_time_series_daily(symbol)
         series = _extract_daily_series(payload)
-        return {"symbol": symbol.upper(), "days": 15, "data": _filter_last_days(series, 15)}
+        return {
+            "symbol": symbol.upper(),
+            "days": 15,
+            "data": _filter_last_days(series, 15),
+        }
     except Exception as e:
         _handle_error(e)
 
@@ -155,6 +168,10 @@ async def time_series_daily_last_30(symbol: str):
         _validate_symbol(symbol)
         payload = await client.get_time_series_daily(symbol)
         series = _extract_daily_series(payload)
-        return {"symbol": symbol.upper(), "days": 30, "data": _filter_last_days(series, 30)}
+        return {
+            "symbol": symbol.upper(),
+            "days": 30,
+            "data": _filter_last_days(series, 30),
+        }
     except Exception as e:
         _handle_error(e)
