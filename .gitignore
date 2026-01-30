@@ -24,6 +24,6 @@ ENV/
 # IDE
 .idea/
 .vscode/
-
+.env
 
 Workflow/
