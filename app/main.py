@@ -1,8 +1,6 @@
 from fastapi import FastAPI
+from app.routes.alphavantage import router as alphavantage_router
 
 app = FastAPI()
 
-
-@app.get("/")
-def read_root():
-    return {"message": "Hello, world!"}
+app.include_router(alphavantage_router, prefix="/api")
