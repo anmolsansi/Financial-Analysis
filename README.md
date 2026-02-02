@@ -8,7 +8,7 @@ This project is designed to practice real backend workflows: building APIs, inte
 
 ## What
 
-The service now exposes multiple market-data endpoints backed by Alpha Vantage. It supports async fetches, structured error handling, logging for all external API calls, and a 2-minute in-memory cache to reduce rate-limit pressure.
+The service now exposes multiple market-data endpoints backed by Alpha Vantage. It supports async fetches, structured error handling, logging for all external API calls, a 2-minute in-memory cache, and a local SQLite cache to avoid refetching fresh data.
 
 ## How
 
@@ -61,6 +61,7 @@ Create a `.env` file in the project root:
 ```bash
 ALPHAVANTAGE_API_KEY=your_key_here
 ALPHAVANTAGE_BASE_URL=https://www.alphavantage.co/query
+ALPHAVANTAGE_DB_PATH=data/alphavantage_cache.db
 ```
 
 ## API Endpoints (prefix: /api)
@@ -76,6 +77,9 @@ ALPHAVANTAGE_BASE_URL=https://www.alphavantage.co/query
 - `GET /gold-spot-price`
 - `GET /silver-spot-price`
 - `GET /app/search-symbol/{keywords}`
+- `GET /cache/time-series/daily/{symbol}`
+- `GET /cache/quote/{symbol}`
+- `GET /cache/company-overview/{symbol}`
 
 ## Error Handling
 
@@ -88,7 +92,10 @@ ALPHAVANTAGE_BASE_URL=https://www.alphavantage.co/query
 
 ## Caching
 
-All external API responses are cached in memory for 2 minutes to reduce repeated calls and avoid rate limits.
+- In-memory cache: 2 minutes for all external API responses.
+- SQLite cache:
+  - Time series daily and global quotes: 10 minutes
+  - Company overview: 1 day
 
 ## Logging
 

@@ -1,3 +1,5 @@
+"""Pytest configuration helpers for test imports and env defaults."""
+
 import os
 import sys
 
@@ -11,3 +13,4 @@ if PROJECT_ROOT not in sys.path:
 # Provide defaults so module-level clients can initialize in tests.
 os.environ.setdefault("ALPHAVANTAGE_API_KEY", "test_api_key")
 os.environ.setdefault("ALPHAVANTAGE_BASE_URL", "https://example.com")
+os.environ.setdefault("ALPHAVANTAGE_DB_PATH", "/tmp/alphavantage_test.db")

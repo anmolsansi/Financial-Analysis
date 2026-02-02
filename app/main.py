@@ -1,3 +1,5 @@
+"""Application entrypoint and router registration."""
+
 from fastapi import FastAPI
 from app.routes.alphavantage import router as alphavantage_router
 
