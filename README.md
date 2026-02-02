@@ -8,13 +8,14 @@ This project is designed to practice real backend workflows: building APIs, inte
 
 ## What
 
-Today, the service exposes a simple root endpoint that returns a hello world message. The planned direction is to fetch financial data from a public API, persist it, and expose analytics endpoints.
+The service now exposes multiple market-data endpoints backed by Alpha Vantage. It supports async fetches, structured error handling, logging for all external API calls, a 2-minute in-memory cache, and a local SQLite cache to avoid refetching fresh data.
 
 ## How
 
 - **Framework:** FastAPI
 - **Workflow:** Milestones that expand the API, storage, and analysis capabilities
 - **Quality:** Linting via flake8 and CI checks in GitHub Actions
+- **External API:** Alpha Vantage (configured via environment variables)
 
 ## Project Roadmap
 
@@ -51,4 +52,57 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Then visit `http://127.0.0.1:8000/`.
+Then visit `http://127.0.0.1:8000/docs` for the interactive API docs.
+
+## Environment
+
+Create a `.env` file in the project root:
+
+```bash
+ALPHAVANTAGE_API_KEY=your_key_here
+ALPHAVANTAGE_BASE_URL=https://www.alphavantage.co/query
+ALPHAVANTAGE_DB_PATH=data/alphavantage_cache.db
+```
+
+## API Endpoints (prefix: /api)
+
+- `GET /stock-price/{symbol}`
+- `GET /time-series/daily/{symbol}`
+- `GET /time-series/daily/{symbol}/last-7`
+- `GET /time-series/daily/{symbol}/last-15`
+- `GET /time-series/daily/{symbol}/last-30`
+- `GET /time-series/weekly/{symbol}`
+- `GET /time-series/monthly/{symbol}`
+- `GET /company-overview/{symbol}`
+- `GET /gold-spot-price`
+- `GET /silver-spot-price`
+- `GET /app/search-symbol/{keywords}`
+- `GET /cache/time-series/daily/{symbol}`
+- `GET /cache/quote/{symbol}`
+- `GET /cache/company-overview/{symbol}`
+
+## Error Handling
+
+- **400**: Invalid request format (e.g., symbol/keywords validation)
+- **401**: Authentication failure
+- **404**: Invalid symbol
+- **429**: Rate limit exceeded
+- **503**: Upstream service issues
+- **500**: Unexpected errors
+
+## Caching
+
+- In-memory cache: 2 minutes for all external API responses.
+- SQLite cache:
+  - Time series daily and global quotes: 10 minutes
+  - Company overview: 1 day
+
+## Logging
+
+All external API requests are logged (start, success, and failure cases) in the Alpha Vantage service layer.
+
+## Tests
+
+```bash
+pytest
+```
